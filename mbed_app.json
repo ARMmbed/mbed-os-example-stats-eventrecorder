@@ -1,0 +1,10 @@
+{
+    "macros": [
+        "MBED_CPU_STATS_ENABLED",
+        "MBED_HEAP_STATS_ENABLED",
+        "MBED_STORAGE_STATS_ENABLED",
+        "MBED_NETWORK_STATS_ENABLED",
+        "MBED_THREAD_STATS_ENABLED",
+        "RTE_Compiler_EventRecorder"
+    ]
+}
