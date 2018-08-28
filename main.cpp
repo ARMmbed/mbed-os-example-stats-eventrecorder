@@ -4,8 +4,8 @@
 #endif
 
 // The example is to demonstrate CPU stats on Event Recorder
-// CPU load is increased suddenly for single sample time to add an anomaly 
- 
+// CPU load is increased suddenly for single sample time to add an anomaly
+
 #include "rtx_evr.h"
 
 #if !defined(MBED_CPU_STATS_ENABLED) || !defined(DEVICE_LPTICKER) || !defined(DEVICE_SLEEP)
@@ -64,12 +64,36 @@ int main()
     Thread *thread;
     int id;
 
+    {
+        mbed_stats_sys_t stats;
+        mbed_stats_sys_get(&stats);
+        printf("Mbed OS Version: 0x%x \n", stats.os_version);
+        printf("CPU ID: 0x%x \n", stats.cpu_id);
+        printf("Compiler ID: %d \n", stats.compiler_id);
+        printf("Compiler Version: %d \n", stats.compiler_version);
+    }
+
+    {
+        mbed_stats_thread_t *stats = new mbed_stats_thread_t[5];
+        int count = mbed_stats_thread_get_each(stats, 5);
+
+        for(int i = 0; i < count; i++) {
+            printf("ID: 0x%x \n", stats[i].id);
+            printf("Name: %s \n", stats[i].name);
+            printf("State: %d \n", stats[i].state);
+            printf("Priority: %d \n", stats[i].priority);
+            printf("Stack Size: %d \n", stats[i].stack_size);
+            printf("Stack Space: %d \n", stats[i].stack_space);
+            printf("\n");
+        }
+    }
+
     EventRecorderInitialize(EventRecordAPI, 1);  // initialize and start Event Recorder
     EventRecorderEnable (EventRecordAPI, MbedDevStats, MbedDevStats);
     EventRecorderStart();
-    
+
     id = stats_queue->call_every(SAMPLE_TIME, cpu_stats_queue);
-    
+
     for (int i = 0; i < 2; i++) {
         thread = new Thread(osPriorityNormal, MAX_THREAD_STACK);
         thread->start(busy_thread);
@@ -80,7 +104,7 @@ int main()
         Thread::wait(SAMPLE_TIME);
         wait_time += 4500;
         Thread::wait(INTERMEDIATE_TIME);
-        
+
         stats_queue->cancel(id);
         id = stats_queue->call_every(SAMPLE_TIME, cpu_load_queue);
     }
