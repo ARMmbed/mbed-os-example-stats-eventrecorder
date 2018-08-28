@@ -29,3 +29,6 @@ https://www.keil.com/pack/doc/compiler/EventRecorder/html/er_use.html
 
 ### Build and execute program
 When executing this example in the µVision debugger, use the menu command View - Analysis Windows - Event Recorder to open the Event Recorder window. 
+
+### Known Issues
+Redefinition of _RTE_ - `RTE_build_issue.patch` Use this patch to fix the build issue
